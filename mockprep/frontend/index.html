@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MockPrep • AI Mock Interview Platform</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Chart.js for Longitudinal Score Tracking -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="./css/styles.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-indigo-500 selection:text-white flex flex-col justify-between">
+
+  <!-- ================= TOP NAVIGATION BAR ================= -->
+  <header class="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-md sticky top-0 z-40 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="window.App.switchView('landing')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-xl font-black tracking-tight bg-gradient-to-r from-white via-indigo-100 to-indigo-400 bg-clip-text text-transparent">MOCKPREP</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20">Group 05</span>
+          </div>
+          <p class="text-[10px] text-slate-400">AI Mock Interview Studio</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+        <button id="navHome" class="text-indigo-400 font-semibold hover:text-white transition">Home</button>
+        <button id="navPractice" class="text-slate-300 hover:text-white transition">Practice Interview</button>
+        <button id="navDashboard" class="text-slate-300 hover:text-white transition">Dashboard & Analytics</button>
+      </nav>
+
+      <!-- Auth Controls -->
+      <div class="flex items-center space-x-3">
+        <!-- Logged Out State -->
+        <div id="loggedOutNav" class="flex items-center space-x-2">
+          <button id="guestDemoBtn" class="text-xs px-3 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-semibold transition">
+            Demo Student
+          </button>
+          <button id="openLoginBtn" class="text-xs px-3.5 py-1.5 rounded-lg text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition">
+            Sign In
+          </button>
+          <button id="openRegisterBtn" class="text-xs px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold shadow-md shadow-indigo-600/30 transition">
+            Register
+          </button>
+        </div>
+
+        <!-- Logged In State -->
+        <div id="loggedInNav" class="hidden flex items-center space-x-3">
+          <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800">
+            <div id="userAvatarText" class="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white text-[10px] font-bold">
+              ST
+            </div>
+            <span id="userDisplayName" class="text-xs font-semibold text-slate-200">Student</span>
+          </div>
+          <button id="logoutBtn" title="Log Out" class="text-xs text-slate-400 hover:text-red-400 bg-slate-800/80 hover:bg-slate-700 p-2 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT CONTAINER ================= -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+    <!-- ================= VIEW 1: LANDING & SYNOPSIS HERO ================= -->
+    <div id="landingSection" class="space-y-16 animate-fadeIn">
+      
+      <!-- Hero Banner -->
+      <div class="text-center max-w-3xl mx-auto pt-6 pb-2">
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>FastAPI + LLM AI Model • IET Lucknow</span>
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white mb-6 leading-tight">
+          Master Job Interviews with <span class="bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">Objective AI Feedback</span>
+        </h1>
+        <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-8">
+          MockPrep is a full-stack web application that simulates real job interviews. Select a role, answer tailored technical or behavioral questions, and receive an instant weighted score out of 10 with actionable improvement tips and model benchmark answers.
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <button id="heroGetStartedBtn" class="px-8 py-4 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-xl shadow-indigo-600/30 flex items-center space-x-2 transition-all transform hover:-translate-y-0.5">
+            <span>Start Practicing Now</span>
+            <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+          <button id="heroPracticeBtn" class="px-7 py-4 rounded-xl font-semibold text-slate-200 bg-slate-900 hover:bg-slate-800 border border-slate-700/80 transition">
+            Session Configuration
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 Key Pillars -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card p-6 rounded-2xl glass-card-hover">
+          <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Role-Specific AI Questions</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Generates dynamic, real-world questions across Software Engineering, Data Analysis, and Custom roles with Easy, Medium, or Hard difficulty.
+          </p>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl glass-card-hover">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Weighted Scoring (Out of 10)</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Multi-dimensional evaluation combining correctness (2.5), clarity (2.0), depth (2.0), relevance (2.0), and communication (1.5).
+          </p>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl glass-card-hover">
+          <div class="w-12 h-12 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Database History & Analytics</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Every session and question result is persisted in PostgreSQL / SQLite with interactive Chart.js score trend tracking over time.
+          </p>
+        </div>
+      </div>
+
+      <!-- Methodology Flowchart Walkthrough -->
+      <div class="glass-card p-8 rounded-3xl border border-slate-800">
+        <div class="text-center max-w-xl mx-auto mb-8">
+          <span class="text-xs uppercase tracking-wider font-semibold text-indigo-400">Methodology & System Flow</span>
+          <h2 class="text-2xl font-black text-white mt-1">How MockPrep Works Step-by-Step</h2>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mx-auto mb-2 text-xs">1</div>
+            <div class="text-sm font-bold text-white">User Auth (JWT)</div>
+            <div class="text-[11px] text-slate-400 mt-1">Secure token-based signup and login</div>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mx-auto mb-2 text-xs">2</div>
+            <div class="text-sm font-bold text-white">Select Parameters</div>
+            <div class="text-[11px] text-slate-400 mt-1">Role, Technical/Behavioral, Difficulty</div>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mx-auto mb-2 text-xs">3</div>
+            <div class="text-sm font-bold text-white">FastAPI + AI Engine</div>
+            <div class="text-[11px] text-slate-400 mt-1">Generates relevant question prompt</div>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mx-auto mb-2 text-xs">4</div>
+            <div class="text-sm font-bold text-white">Type Your Answer</div>
+            <div class="text-[11px] text-slate-400 mt-1">Structured response with hints</div>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center mx-auto mb-2 text-xs">5</div>
+            <div class="text-sm font-bold text-white">Score & Rubric (10.0)</div>
+            <div class="text-[11px] text-slate-400 mt-1">Weighted scoring & model answer</div>
+          </div>
+          <div class="p-4 rounded-xl bg-purple-900/20 border border-purple-800/40">
+            <div class="w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center mx-auto mb-2 text-xs">6</div>
+            <div class="text-sm font-bold text-white">Saved in Database</div>
+            <div class="text-[11px] text-slate-400 mt-1">Stored in PostgreSQL tables</div>
+          </div>
+          <div class="p-4 rounded-xl bg-purple-900/20 border border-purple-800/40">
+            <div class="w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center mx-auto mb-2 text-xs">7</div>
+            <div class="text-sm font-bold text-white">Dashboard Analytics</div>
+            <div class="text-[11px] text-slate-400 mt-1">Score progress tracking & charts</div>
+          </div>
+          <div class="p-4 rounded-xl bg-purple-900/20 border border-purple-800/40">
+            <div class="w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center mx-auto mb-2 text-xs">8</div>
+            <div class="text-sm font-bold text-white">Continuous Growth</div>
+            <div class="text-[11px] text-slate-400 mt-1">Track improvement across sessions</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Synopsis Group Members Credits -->
+      <div class="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Mini Project Synopsis • Group 05</span>
+          <h4 class="text-base font-bold text-white mt-0.5">Institute of Engineering & Technology (IET) Lucknow</h4>
+          <p class="text-xs text-slate-400">Department of Computer Science & Engineering</p>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">Kshitij Varma (2400520100046)</span>
+          <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">Sachin Srivastava (2400520100062)</span>
+          <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">Tarun Kumar (2400520100068)</span>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ================= VIEW 2: SETUP PHASE ================= -->
+    <div id="setupSection" class="hidden space-y-8 animate-fadeIn">
+      
+      <div class="text-center max-w-2xl mx-auto pt-4">
+        <span class="text-xs uppercase tracking-wider font-semibold text-indigo-400">Step 2: Configuration</span>
+        <h2 class="text-3xl font-black text-white mt-1">Select Role, Type & Difficulty</h2>
+        <p class="text-sm text-slate-400 mt-1">MockPrep's AI model will generate relevant, role-specific questions for your practice loop.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Form (7 Cols) -->
+        <div class="lg:col-span-7 glass-card p-6 sm:p-8 rounded-3xl space-y-6">
+          
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Target Job Role</label>
+            <select id="interviewRoleSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="Software Engineer" selected>Software Engineer</option>
+              <option value="Data Analyst">Data Analyst</option>
+              <option value="Frontend Developer">Frontend Developer</option>
+              <option value="Backend Developer">Backend Developer</option>
+              <option value="Product Manager">Product Manager</option>
+              <option value="Custom">Custom Role Title...</option>
+            </select>
+          </div>
+
+          <!-- Custom Role Input (Hidden by default) -->
+          <div id="customRoleWrapper" class="hidden space-y-1.5 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+            <label class="block text-xs font-semibold text-slate-300">Custom Role Specification</label>
+            <input id="customRoleInput" type="text" placeholder="e.g. Cloud Security Architect, QA Automation Lead..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Interview Type</label>
+              <select id="interviewTypeSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="Technical" selected>Technical</option>
+                <option value="Behavioral">Behavioral (STAR Method)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Difficulty Level</label>
+              <select id="interviewDifficultySelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="Easy">Easy (Entry / Junior)</option>
+                <option value="Medium" selected>Medium (Standard / Mid)</option>
+                <option value="Hard">Hard (Senior / Staff)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Number of Questions</label>
+            <select id="questionCountSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="1">1 Question (Quick Check)</option>
+              <option value="3" selected>3 Questions (Standard Loop)</option>
+              <option value="5">5 Questions (Comprehensive Mock)</option>
+            </select>
+          </div>
+
+          <button id="startSessionBtn" class="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-xl shadow-indigo-600/30 flex items-center justify-center space-x-2 transition transform hover:-translate-y-0.5">
+            <span>Begin Mock Interview</span>
+            <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+        </div>
+
+        <!-- Information / Rubric Summary (5 Cols) -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="glass-card p-6 rounded-3xl border border-indigo-500/20">
+            <h3 class="text-base font-bold text-white flex items-center mb-3">
+              <svg class="w-5 h-5 text-indigo-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Weighted Scoring Weights
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Your answers are evaluated out of 10.0 using this exact weighted rubric:</p>
+            
+            <div class="space-y-3 text-xs">
+              <div class="flex justify-between items-center py-1.5 border-b border-slate-800">
+                <span class="text-slate-300 font-medium">Correctness & Accuracy</span>
+                <span class="text-indigo-400 font-bold">2.5 pts (25%)</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-slate-800">
+                <span class="text-slate-300 font-medium">Clarity & Communication</span>
+                <span class="text-emerald-400 font-bold">2.0 pts (20%)</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-slate-800">
+                <span class="text-slate-300 font-medium">Technical Depth</span>
+                <span class="text-cyan-400 font-bold">2.0 pts (20%)</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-slate-800">
+                <span class="text-slate-300 font-medium">Relevance to Question</span>
+                <span class="text-yellow-400 font-bold">2.0 pts (20%)</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-slate-800">
+                <span class="text-slate-300 font-medium">Structure & Delivery</span>
+                <span class="text-purple-400 font-bold">1.5 pts (15%)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-indigo-950/20 border border-indigo-900/40 text-xs text-indigo-200 leading-relaxed">
+            <span class="font-bold text-indigo-300">Tip:</span> Every response is stored in your personal database history so you can track how your scores improve across different roles and difficulties.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ================= VIEW 3: LIVE INTERVIEW ROOM ================= -->
+    <div id="interviewSection" class="hidden space-y-6 animate-fadeIn">
+      
+      <!-- Call Header Bar -->
+      <div class="glass-card p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center space-x-3">
+          <span id="interviewProgressLabel" class="text-sm font-bold text-white">Question 1 of 3</span>
+          <span id="activeRoleBadge" class="text-xs px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30">Software Engineer</span>
+          <span id="activeTypeBadge" class="text-xs px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">Technical</span>
+          <span id="activeDifficultyBadge" class="text-xs px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">Medium</span>
+        </div>
+
+        <div class="flex items-center space-x-2 bg-slate-900 px-3.5 py-1.5 rounded-xl border border-slate-700 font-mono text-xs text-indigo-300">
+          <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span id="interviewTimerDisplay">00:00</span>
+        </div>
+      </div>
+
+      <!-- Linear Progress Bar -->
+      <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+        <div id="interviewProgressBar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full transition-all duration-300" style="width: 33%"></div>
+      </div>
+
+      <!-- ACTIVE QUESTION INPUT PANEL -->
+      <div id="activeQuestionPanel" class="space-y-6">
+        
+        <!-- Question Card -->
+        <div class="glass-card p-6 sm:p-7 rounded-3xl border border-indigo-500/30 space-y-4">
+          <div class="flex justify-between items-center">
+            <span id="activeCategoryBadge" class="text-xs uppercase tracking-wider font-bold text-indigo-400">Core Domain</span>
+            <button id="toggleHintBtn" class="flex items-center space-x-1 text-xs text-amber-300 hover:text-white bg-amber-500/20 hover:bg-amber-500/30 px-3 py-1.5 rounded-lg border border-amber-500/30 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+              <span>View Hint</span>
+            </button>
+          </div>
+
+          <h2 id="activeQuestionText" class="text-xl sm:text-2xl font-bold text-white leading-snug">
+            Generating interview question with FastAPI + AI...
+          </h2>
+
+          <!-- Collapsible Hint Box -->
+          <div id="questionHintBox" class="hidden p-4 rounded-xl bg-amber-950/20 border border-amber-500/30 text-amber-200/90 text-sm">
+            <div class="text-[11px] font-bold text-amber-300 uppercase tracking-wider mb-1">Constructive Hint:</div>
+            <p id="questionHintText"></p>
+          </div>
+        </div>
+
+        <!-- Answer Typing Box -->
+        <div class="glass-card p-6 rounded-3xl space-y-4">
+          <div class="flex justify-between items-center text-xs text-slate-400">
+            <span class="font-semibold uppercase text-slate-300">Type Your Answer</span>
+            <span>Shortcut: <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono">Ctrl + Enter</kbd></span>
+          </div>
+
+          <textarea id="userAnswerInput" rows="7" placeholder="Type your comprehensive response here... Tip: Highlight core definitions, trade-offs, and concrete examples." class="w-full bg-slate-900 border border-slate-700 rounded-2xl p-4 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 leading-relaxed"></textarea>
+
+          <div class="flex justify-end">
+            <button id="submitAnswerBtn" class="px-7 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 flex items-center transition">
+              <span>Submit Answer for AI Evaluation</span>
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- EVALUATION FEEDBACK PANEL (Shows after submitting answer) -->
+      <div id="evaluationFeedbackPanel" class="hidden space-y-6">
+        
+        <!-- Score & Verdict Banner -->
+        <div class="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            
+            <!-- Gauge / Score (4 cols) -->
+            <div class="md:col-span-4 flex flex-col items-center justify-center">
+              <div class="relative w-36 h-36">
+                <svg class="w-full h-full score-circle-svg" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#1e293b" stroke-width="8"></circle>
+                  <circle id="evalCircleProgress" cx="50" cy="50" r="45" fill="none" stroke="url(#scoreGrad)" stroke-width="8" stroke-linecap="round" class="score-circle-path"></circle>
+                  <defs>
+                    <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#6366f1"/>
+                      <stop offset="100%" stop-color="#10b981"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span id="evalScoreValue" class="text-3xl font-black text-white">0.0/10</span>
+                  <span class="text-[10px] uppercase font-bold text-slate-400">Weighted Score</span>
+                </div>
+              </div>
+              <div class="mt-3">
+                <span id="evalVerdictBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">Strong</span>
+              </div>
+            </div>
+
+            <!-- Weighted Breakdown Bars (8 cols) -->
+            <div class="md:col-span-8 space-y-3">
+              <h3 class="text-xs uppercase tracking-wider font-bold text-slate-400">Rubric Breakdown (Out of 10.0)</h3>
+
+              <!-- Correctness -->
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-300 font-medium">Correctness (Weight 2.5)</span>
+                  <span id="subCorrectnessVal" class="text-indigo-400 font-bold">0.0/10</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="subCorrectnessBar" class="bg-indigo-500 h-full rounded-full metric-bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <!-- Clarity -->
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-300 font-medium">Clarity (Weight 2.0)</span>
+                  <span id="subClarityVal" class="text-emerald-400 font-bold">0.0/10</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="subClarityBar" class="bg-emerald-500 h-full rounded-full metric-bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <!-- Depth -->
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-300 font-medium">Technical Depth (Weight 2.0)</span>
+                  <span id="subDepthVal" class="text-cyan-400 font-bold">0.0/10</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="subDepthBar" class="bg-cyan-500 h-full rounded-full metric-bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <!-- Relevance -->
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-300 font-medium">Relevance (Weight 2.0)</span>
+                  <span id="subRelevanceVal" class="text-yellow-400 font-bold">0.0/10</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="subRelevanceBar" class="bg-yellow-500 h-full rounded-full metric-bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <!-- Communication -->
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-300 font-medium">Communication (Weight 1.5)</span>
+                  <span id="subCommunicationVal" class="text-purple-400 font-bold">0.0/10</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="subCommunicationBar" class="bg-purple-500 h-full rounded-full metric-bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Strengths, Tips & Model Answer Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="glass-card p-6 rounded-2xl border border-emerald-500/30">
+            <h4 class="text-sm font-bold text-white flex items-center mb-3">
+              <svg class="w-4 h-4 text-emerald-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              Key Strengths Observed
+            </h4>
+            <ul id="evalStrengthsList" class="space-y-2"></ul>
+          </div>
+
+          <div class="glass-card p-6 rounded-2xl border border-amber-500/30">
+            <h4 class="text-sm font-bold text-white flex items-center mb-3">
+              <svg class="w-4 h-4 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              Actionable Improvement Tips
+            </h4>
+            <ul id="evalImprovementsList" class="space-y-2"></ul>
+          </div>
+        </div>
+
+        <!-- Critique & Model Answer -->
+        <div class="glass-card p-6 rounded-3xl space-y-4">
+          <div class="p-4 rounded-xl bg-indigo-950/20 border border-indigo-800/40">
+            <div class="text-xs uppercase font-bold text-indigo-300 mb-1">AI Constructive Critique:</div>
+            <p id="evalFeedbackSummary" class="text-sm text-slate-200 leading-relaxed"></p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-emerald-950/20 border border-emerald-800/40">
+            <div class="text-xs uppercase font-bold text-emerald-300 mb-1">Model Benchmark Answer:</div>
+            <p id="evalModelAnswerText" class="text-sm text-emerald-100/90 leading-relaxed"></p>
+          </div>
+        </div>
+
+        <!-- Next / Finish Action Row -->
+        <div class="flex justify-end space-x-3 pt-2">
+          <button id="nextQuestionBtn" class="px-7 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 flex items-center transition">
+            <span>Next Question</span>
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+          <button id="finishSessionBtn" class="hidden px-7 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-lg transition">
+            <span>Complete Session & View Dashboard</span>
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================= VIEW 4: DASHBOARD & PROGRESS TRACKING ================= -->
+    <div id="dashboardSection" class="hidden space-y-8 animate-fadeIn">
+      
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <span class="text-xs uppercase tracking-wider font-semibold text-indigo-400">Step 7: History & Scores</span>
+          <h2 class="text-3xl font-black text-white mt-0.5">Your Interview Progress</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Track your longitudinal score improvements and inspect past sessions saved in PostgreSQL.</p>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <button id="refreshDashboardBtn" title="Refresh" class="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          </button>
+          <button id="dashStartNewBtn" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md transition">
+            + Start New Mock Interview
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 KPI Metrics Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="text-xs text-slate-400 uppercase font-semibold">Total Sessions</div>
+          <div id="dashTotalInterviews" class="text-2xl sm:text-3xl font-black text-white mt-1">0</div>
+          <div class="text-[11px] text-indigo-400 mt-1">Completed practice loops</div>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="text-xs text-slate-400 uppercase font-semibold">Average Score</div>
+          <div id="dashAvgScore" class="text-2xl sm:text-3xl font-black text-emerald-400 mt-1">0.0/10</div>
+          <div class="text-[11px] text-slate-400 mt-1">Weighted out of 10.0</div>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="text-xs text-slate-400 uppercase font-semibold">Questions Answered</div>
+          <div id="dashTotalQuestions" class="text-2xl sm:text-3xl font-black text-cyan-400 mt-1">0</div>
+          <div class="text-[11px] text-slate-400 mt-1">Evaluated by AI model</div>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="text-xs text-slate-400 uppercase font-semibold">Strongest Track</div>
+          <div id="dashStrongestRole" class="text-sm sm:text-base font-bold text-purple-300 mt-2 truncate">None yet</div>
+          <div class="text-[11px] text-slate-400 mt-1">Highest scored role</div>
+        </div>
+      </div>
+
+      <!-- Chart.js Trend Graph -->
+      <div class="glass-card p-6 rounded-3xl">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h3 class="text-base font-bold text-white">Score Trend Over Multiple Sessions</h3>
+            <p class="text-xs text-slate-400">Visual proof of performance improvement across practice loops</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-400 font-semibold border border-indigo-500/20">Target: 8.5+</span>
+        </div>
+        <div class="h-64 w-full">
+          <canvas id="scoreTrendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- History Table -->
+      <div class="glass-card rounded-3xl overflow-hidden border border-slate-800">
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+          <h3 class="text-base font-bold text-white">Previous Interview Sessions</h3>
+          <span class="text-xs text-slate-400">Saved in PostgreSQL Database</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 bg-slate-900/40 text-[11px] uppercase tracking-wider text-slate-400 font-semibold">
+                <th class="py-3 px-4">Date</th>
+                <th class="py-3 px-4">Role</th>
+                <th class="py-3 px-4">Type</th>
+                <th class="py-3 px-4">Difficulty</th>
+                <th class="py-3 px-4">Avg Score</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="sessionHistoryTableBody" class="divide-y divide-slate-800/60">
+              <tr>
+                <td colspan="6" class="text-center py-8 text-sm text-slate-400">Loading session history...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="border-t border-slate-800/80 bg-slate-900/40 py-6 text-center text-xs text-slate-500 no-print">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>MockPrep • Built for IET Lucknow Mini Project (Group 05).</p>
+      <p>FastAPI + PostgreSQL + Modern HTML5/CSS3/JS • REST APIs</p>
+    </div>
+  </footer>
+
+  <!-- ================= AUTH MODAL ================= -->
+  <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6">
+      
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 id="authModalTitle" class="text-lg font-bold text-white">MockPrep Account</h3>
+        <button id="closeAuthModal" class="text-slate-400 hover:text-white text-xl leading-none">&times;</button>
+      </div>
+
+      <!-- LOGIN TAB -->
+      <div id="loginTabContent" class="space-y-4">
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1" for="loginEmail">Email Address</label>
+            <input id="loginEmail" type="email" required placeholder="name@domain.com" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1" for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div id="loginError" class="hidden text-xs text-red-400 font-medium"></div>
+          <button id="loginSubmitBtn" type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-md transition">
+            Sign In
+          </button>
+        </form>
+
+        <div class="text-center text-xs text-slate-400 pt-2 border-t border-slate-800">
+          Don't have an account yet? 
+          <button id="switchToRegister" class="text-indigo-400 hover:underline font-semibold ml-1">Create an account</button>
+        </div>
+      </div>
+
+      <!-- REGISTER TAB -->
+      <div id="registerTabContent" class="hidden space-y-4">
+        <form id="registerForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1" for="registerName">Full Name</label>
+            <input id="registerName" type="text" required placeholder="Kshitij Varma" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1" for="registerEmail">Email Address</label>
+            <input id="registerEmail" type="email" required placeholder="name@ietlucknow.ac.in" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1" for="registerPassword">Password (6+ chars)</label>
+            <input id="registerPassword" type="password" minlength="6" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div id="registerError" class="hidden text-xs text-red-400 font-medium"></div>
+          <button id="registerSubmitBtn" type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-md transition">
+            Create Account
+          </button>
+        </form>
+
+        <div class="text-center text-xs text-slate-400 pt-2 border-t border-slate-800">
+          Already have an account? 
+          <button id="switchToLogin" class="text-indigo-400 hover:underline font-semibold ml-1">Sign In</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SESSION DETAIL REVIEW MODAL ================= -->
+  <div id="sessionDetailModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="bg-slate-950 border border-slate-700 rounded-3xl p-6 sm:p-8 max-w-3xl w-full shadow-2xl my-8 max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center">
+          <svg class="w-5 h-5 text-indigo-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Session Inspection & Model Answers
+        </h3>
+        <button id="closeSessionDetailModal" class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
+      </div>
+
+      <div id="sessionDetailContent" class="overflow-y-auto pr-2 space-y-4 flex-grow">
+        <!-- Injected via dashboard.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= APP SCRIPTS ================= -->
+  <script src="./js/api.js"></script>
+  <script src="./js/auth.js"></script>
+  <script src="./js/interview.js"></script>
+  <script src="./js/dashboard.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
