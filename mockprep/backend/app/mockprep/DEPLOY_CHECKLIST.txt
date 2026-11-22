@@ -1,0 +1,15 @@
+# MockPrep — Fixed File Checklist for GitHub Upload
+# Upload ALL these files to your GitHub repository
+
+FILES TO UPDATE ON GITHUB:
+==========================
+
+1. backend/__init__.py        ← NEW (empty package marker)
+2. backend/app/__init__.py    ← NEW (empty package marker)  
+3. backend/app/routes/__init__.py ← NEW (empty package marker)
+4. backend/app/main.py        ← UPDATED (fixed path + SPA catch-all)
+5. frontend/index.html        ← UPDATED (/static/ paths)
+6. frontend/js/api.js         ← UPDATED (API_BASE always uses window.location.origin)
+7. Procfile                   ← UPDATED (correct module path)
+8. render.yaml                ← UPDATED (correct module path)
+9. requirements.txt           ← ROOT LEVEL (must be at repo root!)
